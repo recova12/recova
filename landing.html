@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recova — Master Calisthenics Skills</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f2eb;
+    --accent: #c8ff00;
+    --gray: #1a1a1a;
+    --muted: #555;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid #1c1c1c;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(8px);
+  }
+  .nav-logo { font-family: var(--font-display); font-size: 1.8rem; letter-spacing: 0.05em; color: var(--accent); }
+  .nav-cta {
+    font-size: 13px; font-weight: 500; color: var(--black);
+    background: var(--accent); border: none; border-radius: 4px;
+    padding: 8px 18px; cursor: pointer; text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 7rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 79px,
+      #161616 79px,
+      #161616 80px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 79px,
+      #161616 79px,
+      #161616 80px
+    );
+  }
+  .hero-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 40%, rgba(200,255,0,0.06) 0%, transparent 70%);
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 900px; }
+
+  .hero-eyebrow {
+    display: inline-block;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(200,255,0,0.3);
+    padding: 5px 12px; border-radius: 2px;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-headline {
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 14vw, 11rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero-headline .accent-word { color: var(--accent); }
+
+  .hero-sub {
+    margin-top: 2rem;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    color: #999;
+    max-width: 480px;
+    line-height: 1.7;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-form {
+    margin-top: 2.5rem;
+    display: flex; gap: 10px; flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .hero-form input[type="email"] {
+    flex: 1; min-width: 240px;
+    background: #141414; border: 1px solid #2a2a2a; border-radius: 4px;
+    color: var(--white); font-family: var(--font-body); font-size: 14px;
+    padding: 14px 16px; outline: none;
+    transition: border-color 0.2s;
+  }
+  .hero-form input[type="email"]:focus { border-color: var(--accent); }
+  .hero-form input[type="email"]::placeholder { color: #444; }
+  .hero-form button {
+    background: var(--accent); color: var(--black);
+    font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.05em;
+    border: none; border-radius: 4px; padding: 14px 28px;
+    cursor: pointer; white-space: nowrap;
+    transition: transform 0.1s, opacity 0.15s;
+  }
+  .hero-form button:hover { opacity: 0.9; }
+  .hero-form button:active { transform: scale(0.98); }
+
+  .hero-social-proof {
+    margin-top: 1.25rem;
+    font-size: 12px; color: #555;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+  .hero-social-proof span { color: var(--accent); }
+
+  /* SUCCESS STATE */
+  .success-msg {
+    display: none;
+    margin-top: 1.25rem;
+    font-size: 14px; color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* SKILLS STRIP */
+  .skills-strip {
+    padding: 3rem 2rem;
+    border-top: 1px solid #1a1a1a;
+    border-bottom: 1px solid #1a1a1a;
+    overflow: hidden;
+  }
+  .skills-strip-label {
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 1.25rem;
+  }
+  .skills-ticker {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+  }
+  .skill-tag {
+    font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.05em;
+    color: #2a2a2a; white-space: nowrap;
+    transition: color 0.2s;
+  }
+  .skill-tag:hover { color: var(--accent); cursor: default; }
+  .skill-tag.active { color: var(--white); }
+
+  /* HOW IT WORKS */
+  .section { padding: 6rem 2rem; }
+  .section-label {
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    line-height: 1; margin-bottom: 3.5rem;
+    color: var(--white);
+  }
+
+  .steps { display: flex; flex-direction: column; gap: 1px; }
+  .step {
+    display: grid; grid-template-columns: 3rem 1fr;
+    gap: 1.5rem; align-items: start;
+    padding: 2rem 0;
+    border-top: 1px solid #1c1c1c;
+  }
+  .step-num {
+    font-family: var(--font-display); font-size: 3rem; color: #222;
+    line-height: 1; padding-top: 4px;
+  }
+  .step-body {}
+  .step-title { font-size: 1.1rem; font-weight: 500; color: var(--white); margin-bottom: 0.4rem; }
+  .step-desc { font-size: 14px; color: #666; line-height: 1.7; max-width: 480px; }
+
+  /* SKILLS GRID */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1px;
+    background: #1a1a1a;
+    border: 1px solid #1a1a1a;
+    margin-top: 3rem;
+  }
+  .skill-cell {
+    background: var(--black);
+    padding: 1.5rem 1.25rem;
+    transition: background 0.2s;
+  }
+  .skill-cell:hover { background: #111; }
+  .skill-cell-name { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.03em; color: var(--white); }
+  .skill-cell-phases { font-size: 12px; color: #444; margin-top: 4px; }
+  .skill-cell-bar { height: 2px; background: #1c1c1c; margin-top: 12px; }
+  .skill-cell-fill { height: 2px; background: var(--accent); }
+
+  /* GAME MECHANICS */
+  .mechanics { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1px; background: #1a1a1a; border: 1px solid #1a1a1a; margin-top: 3rem; }
+  .mechanic {
+    background: var(--black);
+    padding: 2rem 1.5rem;
+  }
+  .mechanic-icon {
+    font-size: 1.5rem; margin-bottom: 1rem;
+    width: 44px; height: 44px;
+    border: 1px solid #2a2a2a; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mechanic-title { font-size: 15px; font-weight: 500; color: var(--white); margin-bottom: 0.4rem; }
+  .mechanic-desc { font-size: 13px; color: #555; line-height: 1.6; }
+
+  /* CTA SECTION */
+  .cta-section {
+    padding: 6rem 2rem;
+    text-align: center;
+    border-top: 1px solid #1a1a1a;
+    position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: 'RECOVA';
+    position: absolute;
+    font-family: var(--font-display);
+    font-size: 22vw; color: transparent;
+    -webkit-text-stroke: 1px #1a1a1a;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+  }
+  .cta-section .section-title { position: relative; z-index: 1; }
+  .cta-form {
+    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+    position: relative; z-index: 1; margin-top: 2rem;
+  }
+  .cta-form input[type="email"] {
+    min-width: 260px;
+    background: #141414; border: 1px solid #2a2a2a; border-radius: 4px;
+    color: var(--white); font-family: var(--font-body); font-size: 14px;
+    padding: 14px 16px; outline: none;
+    transition: border-color 0.2s;
+  }
+  .cta-form input[type="email"]:focus { border-color: var(--accent); }
+  .cta-form input[type="email"]::placeholder { color: #444; }
+  .cta-form button {
+    background: var(--accent); color: var(--black);
+    font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.05em;
+    border: none; border-radius: 4px; padding: 14px 28px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .cta-form button:hover { opacity: 0.9; }
+  .cta-success { display: none; font-size: 15px; color: var(--accent); font-weight: 500; margin-top: 1rem; position: relative; z-index: 1; }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem;
+    border-top: 1px solid #1a1a1a;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  footer .logo { font-family: var(--font-display); font-size: 1.4rem; color: var(--accent); letter-spacing: 0.05em; }
+  footer p { font-size: 12px; color: #333; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.25rem; }
+    .hero { padding: 6rem 1.25rem 3rem; }
+    .section { padding: 4rem 1.25rem; }
+    .cta-section { padding: 4rem 1.25rem; }
+    footer { padding: 1.5rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">RECOVA/div>
+  <a href="#waitlist" class="nav-cta">Join waitlist</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Coming soon — iOS & Android</div>
+    <h1 class="hero-headline">LEVEL<br>UP YOUR<br><span class="accent-word">BODY.</span></h1>
+    <p class="hero-sub">Recova turns calisthenics into an RPG. Pick your dream skill — handstand, muscle-up, front lever — and the app tells you exactly what to do every single day. No guessing. Just show up and level up.</p>
+    <form class="hero-form" id="hero-form" onsubmit="handleSubmit(event, 'hero')">
+      <input type="email" placeholder="Enter your email" required id="hero-email" autocomplete="email">
+      <button type="submit">GET EARLY ACCESS</button>
+    </form>
+    <p class="hero-social-proof" id="hero-proof"><span>247 people</span> already on the waitlist</p>
+    <p class="success-msg" id="hero-success">You're on the list. We'll hit you when it drops.</p>
+  </div>
+</section>
+
+<!-- SKILLS STRIP -->
+<div class="skills-strip">
+  <div class="skills-strip-label">Dream skills you'll unlock</div>
+  <div class="skills-ticker">
+    <span class="skill-tag active">HANDSTAND</span>
+    <span class="skill-tag">MUSCLE-UP</span>
+    <span class="skill-tag active">FRONT LEVER</span>
+    <span class="skill-tag">PLANCHE</span>
+    <span class="skill-tag">BACK LEVER</span>
+    <span class="skill-tag">HUMAN FLAG</span>
+    <span class="skill-tag active">PISTOL SQUAT</span>
+    <span class="skill-tag">L-SIT</span>
+    <span class="skill-tag">ONE-ARM PULL-UP</span>
+    <span class="skill-tag">ONE-ARM HANDSTAND</span>
+    <span class="skill-tag">IMPOSSIBLE DIP</span>
+    <span class="skill-tag">IRON CROSS</span>
+    <span class="skill-tag">MALTESE</span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+  <div class="section-label">How it works</div>
+  <div class="section-title">NO GUESSWORK.<br>JUST REPS.</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-body">
+        <div class="step-title">Pick your dream skill</div>
+        <div class="step-desc">Choose the move you've always wanted — handstand, muscle-up, front lever. We map out every step to get you there.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-body">
+        <div class="step-title">Get today's quest</div>
+        <div class="step-desc">The app tells you exactly what to train — specific drills, sets, and holds. Fully guided. No decisions needed on your end.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-body">
+        <div class="step-title">Log it and earn XP</div>
+        <div class="step-desc">Complete your session, tap done. Earn XP, keep your streak alive, collect badges. Every rep counts toward your level.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-body">
+        <div class="step-title">Level up. Unlock the next phase.</div>
+        <div class="step-desc">As your level climbs, new skill phases unlock. Watch your progression move from wall kick-ups to freestanding handstands over weeks, not months.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILL PROGRESSIONS -->
+<section class="section" style="padding-top: 0;">
+  <div class="section-label">Skill paths</div>
+  <div class="section-title">EVERY SKILL.<br>FULLY MAPPED.</div>
+  <div class="skills-grid">
+    <div class="skill-cell">
+      <div class="skill-cell-name">Handstand</div>
+      <div class="skill-cell-phases">5 phases</div>
+      <div class="skill-cell-bar"><div class="skill-cell-fill" style="width:40%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-name">Muscle-up</div>
+      <div class="skill-cell-phases">4 phases</div>
+      <div class="skill-cell-bar"><div class="skill-cell-fill" style="width:0%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-name">Front lever</div>
+      <div class="skill-cell-phases">6 phases</div>
+      <div class="skill-cell-bar"><div class="skill-cell-fill" style="width:0%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-name">Planche</div>
+      <div class="skill-cell-phases">6 phases</div>
+      <div class="skill-cell-bar"><div class="skill-cell-fill" style="width:0%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-name">Back lever</div>
+      <div class="skill-cell-phases">4 phases</div>
+      <div class="skill-cell-bar"><div class="skill-cell-fill" style="width:0%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-name">Human flag</div>
+      <div class="skill-cell-phases">5 phases</div>
+      <div class="skill-cell-bar"><div class="skill-cell-fill" style="width:0%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-name">Pistol squat</div>
+      <div class="skill-cell-phases">4 phases</div>
+      <div class="skill-cell-bar"><div class="skill-cell-fill" style="width:0%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-name">L-sit</div>
+      <div class="skill-cell-phases">3 phases</div>
+      <div class="skill-cell-bar"><div class="skill-cell-fill" style="width:0%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-name">One-arm handstand</div>
+      <div class="skill-cell-phases">6 phases</div>
+      <div class="skill-cell-bar"><div class="skill-cell-fill" style="width:0%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-name">Impossible dip</div>
+      <div class="skill-cell-phases">5 phases</div>
+      <div class="skill-cell-bar"><div class="skill-cell-fill" style="width:0%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-name">Iron cross</div>
+      <div class="skill-cell-phases">6 phases</div>
+      <div class="skill-cell-bar"><div class="skill-cell-fill" style="width:0%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-name">Maltese</div>
+      <div class="skill-cell-phases">7 phases</div>
+      <div class="skill-cell-bar"><div class="skill-cell-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- GAME MECHANICS -->
+<section class="section" style="padding-top: 0;">
+  <div class="section-label">Game mechanics</div>
+  <div class="section-title">DISCIPLINE<br>FEELS LIKE<br>A GAME.</div>
+  <div class="mechanics">
+    <div class="mechanic">
+      <div class="mechanic-icon">🔥</div>
+      <div class="mechanic-title">Daily streaks</div>
+      <div class="mechanic-desc">Log once a day to keep your streak. Miss it and it resets. One rest-day freeze per week — use it wisely.</div>
+    </div>
+    <div class="mechanic">
+      <div class="mechanic-icon">⚡</div>
+      <div class="mechanic-title">XP & leveling</div>
+      <div class="mechanic-desc">Every session earns XP. Level up to unlock harder progressions and exclusive dream skills.</div>
+    </div>
+    <div class="mechanic">
+      <div class="mechanic-icon">🏅</div>
+      <div class="mechanic-title">Badges</div>
+      <div class="mechanic-desc">Earn badges for milestones — first skill unlocked, 30-day streak, phase completions, challenge wins.</div>
+    </div>
+    <div class="mechanic">
+      <div class="mechanic-icon">👥</div>
+      <div class="mechanic-title">Friend leaderboard</div>
+      <div class="mechanic-desc">See who's grinding hardest this week. Nudge friends whose streaks are about to break.</div>
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="cta-section" id="waitlist">
+  <div class="section-title">READY TO<br><span style="color:var(--accent);">RECOVA?</span></div>
+  <form class="cta-form" id="cta-form" onsubmit="handleSubmit(event, 'cta')">
+    <input type="email" placeholder="Your email" required id="cta-email" autocomplete="email">
+    <button type="submit">JOIN WAITLIST</button>
+  </form>
+  <p class="cta-success" id="cta-success">You're on the list. We'll hit you when it drops.</p>
+  <p style="font-size: 12px; color: #333; margin-top: 1rem; position: relative; z-index: 1;">No spam. Just a launch notification.</p>
+</section>
+
+<footer>
+  <div class="logo">RECOVA</div>
+  <p>© 2026 Recova. Coming to iOS & Android.</p>
+</footer>
+
+<script>
+  let count = 247;
+
+  function handleSubmit(e, source) {
+    e.preventDefault();
+    const email = document.getElementById(source === 'hero' ? 'hero-email' : 'cta-email').value;
+    if (!email) return;
+
+    if (source === 'hero') {
+      document.getElementById('hero-form').style.display = 'none';
+      document.getElementById('hero-proof').style.display = 'none';
+      document.getElementById('hero-success').style.display = 'block';
+    } else {
+      document.getElementById('cta-form').style.display = 'none';
+      document.getElementById('cta-success').style.display = 'block';
+    }
+
+    count++;
+    const proofEl = document.getElementById('hero-proof');
+    if (proofEl) proofEl.innerHTML = `<span>${count} people</span> already on the waitlist`;
+  }
+
+  // Animate skill tags cycling
+  const tags = document.querySelectorAll('.skill-tag');
+  let tagIdx = 0;
+  setInterval(() => {
+    tags.forEach(t => t.classList.remove('active'));
+    tags[tagIdx % tags.length].classList.add('active');
+    tags[(tagIdx + 2) % tags.length].classList.add('active');
+    tags[(tagIdx + 5) % tags.length].classList.add('active');
+    tagIdx++;
+  }, 1400);
+</script>
+</body>
+</html>
