@@ -511,6 +511,7 @@
     count++;
     const proofEl = document.getElementById('hero-proof');
     if (proofEl) proofEl.innerHTML = `<span>${count} people</span> already on the waitlist`;
+    window.open("https://tally.so/r/Pd85Dd?email=" + encodeURIComponent(email), "_blank");
   }
 
   // Animate skill tags cycling
